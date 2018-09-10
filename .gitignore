@@ -1,0 +1,6 @@
+build/
+run.conf
+vendor/
+*.pyc
+dist/
+fluentd-axes
