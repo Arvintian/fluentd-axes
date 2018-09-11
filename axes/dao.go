@@ -21,12 +21,6 @@ type targetRsp struct {
 	Status string              `json:"status"`
 }
 
-type defaultRsp struct {
-	Result map[string]string `json:"result"`
-	Reason string            `json:"reason"`
-	Status string            `json:"status"`
-}
-
 func getTargetList() ([]map[string]string, error) {
 	rsp, err := httpget("http://127.0.0.1:5000/v1/target/load")
 	if err != nil {
@@ -48,38 +42,4 @@ func getTargetList() ([]map[string]string, error) {
 	// 	"topic":   "demo",
 	// }
 	// return targets
-}
-
-func getDefaultTarget() (map[string]string, error) {
-	rsp, err := httpget("http://127.0.0.1:5000/v1/default/get")
-	if err != nil {
-		return nil, fmt.Errorf("get default error %v", err)
-	}
-	var data defaultRsp
-	err = json.Unmarshal(rsp, &data)
-	if err != nil {
-		return nil, fmt.Errorf("get default error %v", err)
-	}
-	if data.Status != "ok" {
-		return nil, fmt.Errorf("get default error %v", data.Reason)
-	}
-	if data.Result == nil {
-		return nil, fmt.Errorf("get default error %v", "no result")
-	}
-	if _, ok := data.Result["brokers"]; !ok {
-		return nil, fmt.Errorf("get default error %v", "no brokers")
-	}
-	if _, ok := data.Result["topic"]; !ok {
-		return nil, fmt.Errorf("get default error %v", "no topic")
-	}
-	if _, ok := data.Result["interval"]; !ok {
-		return nil, fmt.Errorf("get default error %v", "no interval")
-	}
-	return data.Result, nil
-	// target := map[string]string{
-	// 	"brokers":  "192.168.87.80:30092",
-	// 	"topic":    "fluentd",
-	// 	"interval": "3",
-	// }
-	// return target
 }

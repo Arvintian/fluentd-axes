@@ -16,6 +16,5 @@ from .models import init_model
 init_model()
 
 # app router
-from .views import bp_target, bp_default
+from .views import bp_target
 app.register_blueprint(bp_target, url_prefix='/v1/target')
-app.register_blueprint(bp_default, url_prefix="/v1/default")

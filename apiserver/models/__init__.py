@@ -1,7 +1,6 @@
 # coding:utf-8
 
 from .target import Target
-from .default import Default
 from apiserver import db, app
 
 

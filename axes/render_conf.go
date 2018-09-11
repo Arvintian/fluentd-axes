@@ -16,8 +16,7 @@ var (
 )
 
 type renderContext struct {
-	DefaultTarget map[string]string
-	Targets       []map[string]string
+	Targets []map[string]string
 }
 
 func filePath(name string) string {
@@ -30,11 +29,6 @@ func filePath(name string) string {
 
 func getRenderContext() (renderContext, error) {
 	var rc renderContext
-	defaultTarget, err := getDefaultTarget()
-	if err != nil {
-		return rc, err
-	}
-	rc.DefaultTarget = defaultTarget
 	targets, err := getTargetList()
 	if err != nil {
 		return rc, err
@@ -44,7 +38,7 @@ func getRenderContext() (renderContext, error) {
 	for k, v := range targets {
 		//log.Printf("%v", v)
 		if _, ok := v["interval"]; !ok {
-			v["interval"] = rc.DefaultTarget["interval"]
+			v["interval"] = "3"
 		}
 		rc.Targets[k] = v
 	}
