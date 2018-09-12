@@ -37,9 +37,6 @@ func getRenderContext() (renderContext, error) {
 	rc.Targets = make([]map[string]string, len(targets))
 	for k, v := range targets {
 		//log.Printf("%v", v)
-		if _, ok := v["interval"]; !ok {
-			v["interval"] = "3"
-		}
 		rc.Targets[k] = v
 	}
 	return rc, nil

@@ -2,7 +2,7 @@
 
 from flask import Blueprint, request
 from sqlalchemy import desc
-from apiserver.repositorys.props import auth, success, error, panic
+from apiserver.repositorys.props import auth, success, error, panic, m2dict
 from apiserver.types.target import AddSchema, UpdateSchema, DeleteSchema
 from apiserver.models import Target
 from apiserver import db
@@ -14,21 +14,12 @@ bp_target = Blueprint("bp_target", __name__)
 @panic(AddSchema)
 def add_target(args):
     target = Target(name=args.get("name"))
-    if args.get("brokers", None):
-        target.brokers = args.get("brokers")
-    if args.get("target", None):
-        target.target = args.get("target")
-    if args.get("topic", None):
-        target.topic = args.get("topic")
-    if args.get("interval", None):
-        target.interval = args.get("interval")
+    for k, v in args.items():
+        target.__setattr__(k, v)
     db.session.add(target)
     db.session.commit()
     return success({
-        "result": {
-            "id": target.id,
-            "name": target.name
-        }
+        "result": m2dict(target)
     })
 
 
@@ -38,19 +29,11 @@ def update_target(args):
     target = Target.query.filter_by(id=args.get("id")).first()
     if not target:
         return error(reason="没有该记录")
-    if args.get("name", None):
-        target.name = args.get("name")
-    if args.get("brokers", None):
-        target.brokers = args.get("brokers")
-    if args.get("target", None):
-        target.target = args.get("target")
-    if args.get("topic", None):
-        target.topic = args.get("topic")
-    if args.get("interval", None):
-        target.interval = args.get("interval")
+    for k, v in args.items():
+        target.__setattr__(k, v)
     db.session.commit()
     return success({
-        "result": target.to_dict()
+        "result": m2dict(target)
     })
 
 
@@ -68,11 +51,11 @@ def delete_target(args):
 @bp_target.route("/list", methods=["GET"])
 @panic()
 def list_target():
-    targes = Target.query.order_by(desc(Target.id)).all()
+    targets = Target.query.order_by(desc(Target.id)).all()
     res = []
-    if targes:
-        for item in targes:
-            res.append(item.to_dict())
+    if targets:
+        for item in targets:
+            res.append(m2dict(item))
     return success({
         "result": res
     })
@@ -88,8 +71,15 @@ def load_target():
             "result": res
         })
     for item in targets:
-        if item.target and item.brokers and item.topic:
-            res.append(item.to_dict())
+        enables = {}
+        if item.enable_kafka:
+            enables.update(item.kafka_config())
+        if item.enable_sls:
+            enables.update(item.sls_config())
+        if enables:
+            enables.update(item.buffer_config())
+            enables.update({"enable": "true"})
+            res.append(enables)
     return success({
         "result": res
     })

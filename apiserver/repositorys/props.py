@@ -81,3 +81,7 @@ def error(r=None, reason=None):
     if r:
         s.update(r)
     return jsonify(s)
+
+
+def m2dict(model):
+    return {c.name: getattr(model, c.name, None) for c in model.__table__.columns}
