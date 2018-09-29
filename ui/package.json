@@ -1,0 +1,109 @@
+{
+  "name": "dashboard-ui-demo",
+  "version": "0.1.0",
+  "description": "dashboard前端模板",
+  "private": true,
+  "scripts": {
+    "start": "currVersion=dev PORT=8080 umi dev",
+    "start:no-proxy": "cross-env MOCK=none umi dev",
+    "build": "cross-env ESLINT=none currVersion=pub umi build",
+    "site": "roadhog-api-doc static && gh-pages -d dist",
+    "analyze": "cross-env ANALYZE=true roadhog build",
+    "lint:style": "stylelint \"src/**/*.less\" --syntax less",
+    "lint": "eslint --ext .js src mock tests && npm run lint:style",
+    "lint:fix": "eslint --fix --ext .js src mock tests && npm run lint:style",
+    "lint-staged": "lint-staged",
+    "lint-staged:js": "eslint --ext .js",
+    "test": "roadhog test",
+    "test:component": "roadhog test ./src/components",
+    "test:all": "node ./tests/run-tests.js",
+    "prettier": "prettier --write ./src/**/**/**/*",
+    "commit": "git-cz",
+    "release": "standard-version"
+  },
+  "dependencies": {
+    "@babel/polyfill": "^7.0.0-beta.36",
+    "babel-plugin-transform-decorators-legacy": "^1.3.4",
+    "antd": "3.9.2",
+    "babel-runtime": "^6.9.2",
+    "classnames": "^2.2.5",
+    "enquire-js": "^0.2.1",
+    "immutability-helper": "^2.7.0",
+    "less": "2.7.2",
+    "lodash": "^4.17.10",
+    "lodash-decorators": "^5.0.0",
+    "lodash.isequal": "^4.5.0",
+    "memoize-one": "^4.0.0",
+    "moment": "^2.19.1",
+    "moment-timezone": "^0.5.21",
+    "numeral": "^2.0.6",
+    "nzh": "^1.0.3",
+    "omit.js": "^1.0.0",
+    "path-to-regexp": "^2.1.0",
+    "prop-types": "^15.5.10",
+    "qs": "^6.5.0",
+    "rc-drawer-menu": "^0.5.0",
+    "react": "^16.2.0",
+    "react-container-query": "^0.9.1",
+    "react-copy-to-clipboard": "^5.0.1",
+    "react-document-title": "^2.0.3",
+    "react-iframe": "^1.2.0",
+    "react-trello": "1.31.5",
+    "url-polyfill": "^1.0.10"
+  },
+  "devDependencies": {
+    "@types/react": "^16.4.11",
+    "@types/react-dom": "^16.0.6",
+    "antd-pro-merge-less": "^0.0.9",
+    "antd-pro-theme-webpack-plugin": "^1.1.8",
+    "babel-eslint": "^9.0.0",
+    "commitizen": "^2.10.1",
+    "cross-env": "^5.1.1",
+    "cross-port-killer": "^1.0.1",
+    "cz-conventional-changelog": "^2.1.0",
+    "enzyme": "^3.4.4",
+    "eslint": "^5.4.0",
+    "eslint-config-airbnb": "^17.0.0",
+    "eslint-config-prettier": "^3.0.1",
+    "eslint-plugin-babel": "^5.1.0",
+    "eslint-plugin-compat": "^2.5.1",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-markdown": "^1.0.0-beta.6",
+    "eslint-plugin-react": "^7.11.1",
+    "gh-pages": "^2.0.0",
+    "husky": "^0.14.3",
+    "lint-staged": "^7.2.0",
+    "merge-umi-mock-data": "^0.0.3",
+    "mockjs": "^1.0.1-beta3",
+    "prettier": "1.14.2",
+    "pro-download": "^1.0.1",
+    "standard-version": "^4.4.0",
+    "stylelint": "^9.4.0",
+    "stylelint-config-prettier": "^4.0.0",
+    "stylelint-config-standard": "^18.0.0",
+    "umi": "^2.0.1",
+    "umi-plugin-react": "^1.0.1"
+  },
+  "lint-staged": {
+    "**/*.{js,jsx,less}": [
+      "prettier --write",
+      "git add"
+    ],
+    "**/*.{js,jsx}": "lint-staged:js",
+    "**/*.less": "stylelint --syntax less"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 10"
+  ],
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}
