@@ -1,104 +1,165 @@
 import React from 'react'
-import Board from 'react-trello'
-import { Card, Tag, List, Avatar, Modal, Form, Button } from 'antd'
-import styles from './index.less'
-import { connect } from 'dva'
-import moment, * as moments from 'moment';
+import { connect } from "dva"
+import { Card, Table, Button, Modal, Form, Input } from "antd"
 
 const FormItem = Form.Item
+const createFormField = Form.createFormField
 
-const CustomCard = props => {
-    let color = ''
-    let backgroundColor = 'white'
+class ModalForm extends React.Component {
 
-    if (props.source.name === '京仓京配') {
-        color = '#DB5461'
-    } else if (props.source.name === '爆品高佣') {
-        color = '#3891A6'
+    constructor(props) {
+        super(props)
     }
 
-    // 处理问题标示
-    if (props.alert === true) {
-        backgroundColor = '#FDFD97'
+    render() {
+        console.log(this.props)
+        const { getFieldDecorator } = this.props.form
+        let formItemLayout = {
+            labelCol: { span: 4 },
+            wrapperCol: { span: 18 },
+        }
+        return (
+            <Form>
+                <FormItem label="应用名称" {...formItemLayout}>
+                    {getFieldDecorator("name", {})(
+                        <Input placeholder="应用名称"></Input>
+                    )}
+                </FormItem>
+            </Form>
+        )
     }
 
-    return (
-        <div style={{ padding: '0px 10px', borderLeft: `5px solid ${color}`, backgroundColor }}>
-            <List.Item key={props._id}>
-                <List.Item.Meta
-                    avatar={
-                        <img
-                            src={props.imgPath}
-                            style={{ width: '64px', height: '64px' }}
-                        />
-                    }
-                    title={
-                        <div>
-                            <h4 className='ant-list-item-meta-title'>{props.title}</h4>
-                            <span style={{ fontSize: '10px', fontWeight: 'bold', color: '#D70000' }}>{props.alertMessage}</span>
-                        </div>
-                    }
-                    description={
-                        <div>
-                            <p className={styles.cardDescrption}>{props.source.name} / {props.category} / {props.categorySummary}</p>
-                            {props.onlineTime && <p className={styles.cardDateTime}>{props.timelabel} {moment(props.onlineTime).format('HH:mm:ss')}</p>}
-                        </div>
-                    }
-                />
-            </List.Item>
-        </div>
-    )
-};
-
-function TrelloList() {
-    const data = {
-        lanes: [
-            {
-                cards: [{
-                    alert: false,
-                    alertMessage: null,
-                    cardStyle: {
-                        maxWidth: "300px"
-                    },
-                    category: "食品饮料",
-                    categorySummary: "生鲜吃喝",
-                    id: "5bacf2f21caf45001a888570",
-                    imgPath: "http://static-pics.jingxiangbang.com/7ff590e0-c267-11e8-be45-45496a1deda5.jpg",
-                    laneId: "online",
-                    onlineTime: "2018-09-28T01:00:15.114Z",
-                    source: {
-                        name: "爆品高佣"
-                    },
-                    tilelabe: "上线时间",
-                    title: "【申通包邮】同仁堂红豆薏仁粉，建议每天清晨5点到7点空腹食用一餐，睡前服用一餐，效果更佳！"
-
-                }],
-                currentPage: 1,
-                droppable: false,
-                id: "online",
-                labels: "0 / 11",
-                title: "今天已上线"
-            }
-        ]
-    }
-
-
-    const boardProps = {
-        data,
-        draggable: true,
-        customCardLayout: true,
-        laneDraggable: false,
-        style: { background: '#f0f2f5' },
-    }
-
-    return (
-        <div>
-            <Board {...boardProps}>
-                <CustomCard />
-            </Board>
-        </div >
-    )
 }
 
+class Dashboard extends React.Component {
 
-export default TrelloList
+    constructor(props) {
+        super(props)
+        this.state = {
+            modal: false,
+            edit: "update",
+            item: {}
+        }
+    }
+
+    componentDidMount() {
+        this.props.dispatch({
+            type: "dashboard/fetchData",
+            payload: {}
+        })
+    }
+
+    onAdd() {
+        this.setState({
+            modal: true,
+            edit: "add",
+            item: {}
+        })
+    }
+
+    onEdit(record) {
+        console.log(record)
+        this.setState({
+            modal: true,
+            edit: "update",
+            item: record
+        })
+    }
+
+    onModalCancel() {
+        this.setState({
+            modal: false
+        })
+    }
+
+    onModalOk() {
+        if (this.state.edit == "add") {
+            this.props.dispatch({
+                type: "dashboard/addApp",
+                payload: {
+                    item: this.state.item
+                }
+            })
+        } else if (this.state.edit == "update") {
+            this.props.dispatch({
+                type: "dashboard/updateApp",
+                payload: {
+                    item: this.state.item
+                }
+            })
+        }
+        this.setState({
+            modal: false
+        })
+    }
+
+    render() {
+        let colums = [{
+            title: "应用ID",
+            dataIndex: "id",
+            key: "id",
+        }, {
+            title: "应用名称",
+            dataIndex: "name",
+            key: "name"
+        }, {
+            title: "Fluentd规则",
+            dataIndex: "target",
+            key: "target"
+        }, {
+            title: "操作",
+            key: "edit",
+            render: (text, record) => {
+                return (
+                    <a href="javascript:;" onClick={() => this.onEdit(record)}>编辑</a>
+                )
+            }
+        }]
+        let extra = <a href="javascript:;" onClick={() => this.onAdd()}>添加</a>
+        let dataSource = this.props.applist
+        //modal
+        let WrapperModalForm = Form.create({
+            mapPropsToFields: (props) => {
+                return {
+                    name: createFormField({
+                        value: props.fields.name.value
+                    })
+                }
+            },
+            onFieldsChange: (props, fields) => {
+                console.log(props)
+                console.log(fields)
+            }
+        })(ModalForm)
+        let fields = {
+            name: {
+                value: this.state.item.name
+            }
+        }
+        return (
+            <div>
+                <Card title="应用列表" extra={extra}>
+                    <Table bordered={true} rowKey="id" dataSource={dataSource} columns={colums}></Table>
+                </Card>
+                <Modal
+                    title={this.state.edit == "add" ? "添加" : "更新"}
+                    visible={this.state.modal}
+                    onCancel={() => this.onModalCancel()}
+                    onOk={() => this.onModalOk()}
+                    closable={false}
+                >
+                    <WrapperModalForm fields={fields} ></WrapperModalForm>
+                </Modal>
+            </div>
+        )
+    }
+
+}
+
+function mapStateToProps(state) {
+    return {
+        applist: state.dashboard.applist
+    }
+}
+
+export default connect(mapStateToProps)(Dashboard)

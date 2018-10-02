@@ -6,9 +6,10 @@ from apiserver import db
 class Target(db.Model):
     __tablename__ = "targets"
     id = db.Column("id", db.Integer, primary_key=True)
-    # kafka
+    # app
     name = db.Column("name", db.String(64), unique=True, nullable=False)
     target = db.Column("target", db.String(64), unique=True)
+    # kafka
     brokers = db.Column("brokers", db.String(128))
     topic = db.Column("topic", db.String(64))
     # aliyun sls

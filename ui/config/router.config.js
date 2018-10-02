@@ -4,10 +4,10 @@ module.exports = [
         component: '../layouts/BasicLayout',
         routes: [
             {
-                path: '/dashboard', name: 'dashboard', icon: 'table',
-                routes: [
-                    { path: '/dashboard/list', component: './Dashboard/', name: 'listview' },
-                ]
+                path: "/", redirect: "/dashboard",
+            },
+            {
+                path: '/dashboard', component: "./Dashboard", name: 'dashboard', icon: 'table',
             },
         ],
     }

@@ -4,7 +4,7 @@ export default {
     'navbar.lang': 'English',
     'menu': '菜单',
     'menu.home': '首页',
-    'menu.dashboard': '排期',
+    'menu.dashboard': '应用管理',
     'menu.dashboard.listview': '任务列表',
     'menu.dashboard.setting': '设置',
     'menu.analysis': '统计',

@@ -41,5 +41,11 @@ export default {
         APP_TYPE: process.env.APP_TYPE || '',
     },
     publicPath: getPublishPath(),
-    history: 'hash'
+    history: 'hash',
+    proxy: {
+        "/v1": {
+            "target": "http://127.0.0.1:5000",
+            "changeOrigin": true
+        }
+    }
 };
