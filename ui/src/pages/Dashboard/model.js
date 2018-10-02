@@ -1,4 +1,5 @@
-import { fetchTargets } from "../../services/target"
+import { fetchTargets, addTarget, updateTarget, deleteTarget } from "../../services/target"
+import { message } from "antd"
 
 export default {
     namespace: "dashboard",
@@ -19,7 +20,6 @@ export default {
     effects: {
 
         *fetchData({ payload }, { put, call, select }) {
-            console.log("fetch applist")
             let data = yield call(fetchTargets)
             if (data.result) {
                 yield put({
@@ -32,13 +32,42 @@ export default {
         },
 
         *addApp({ payload: { item } }, { put, call, select }) {
-            console.log("add app")
-            console.log(item)
+            let data = yield call(addTarget, { ...item })
+            if (data.status == "ok") {
+                yield put({
+                    type: "fetchData",
+                    payload: {}
+                })
+                message.success("添加成功")
+            } else {
+                message.error(data.reason)
+            }
         },
 
         *updateApp({ payload: { item } }, { put, call, select }) {
-            console.log("update add")
-            console.log(item)
+            let data = yield call(updateTarget, { ...item })
+            if (data.status == "ok") {
+                yield put({
+                    type: "fetchData",
+                    payload: {}
+                })
+                message.success("更新成功")
+            } else {
+                message.error(data.reason)
+            }
+        },
+
+        *deleteApp({ payload: { id } }, { put, call, select }) {
+            let data = yield call(deleteTarget, { id })
+            if (data.status == "ok") {
+                yield put({
+                    type: "fetchData",
+                    payload: {}
+                })
+                message.success("删除成功")
+            } else {
+                message.error(data.reason)
+            }
         }
 
     }
