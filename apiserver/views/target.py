@@ -71,15 +71,13 @@ def load_target():
             "result": res
         })
     for item in targets:
-        enables = {}
-        if item.enable_kafka:
-            enables.update(item.kafka_config())
-        if item.enable_sls:
-            enables.update(item.sls_config())
-        if enables:
-            enables.update(item.buffer_config())
+        enables = {"enable": "false"}
+        enables.update(item.kafka_config())
+        enables.update(item.sls_config())
+        enables.update(item.buffer_config())
+        if item.enable_kafka or item.enable_sls:
             enables.update({"enable": "true"})
-            res.append(enables)
+        res.append(enables)
     return success({
         "result": res
     })

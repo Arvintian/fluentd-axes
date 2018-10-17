@@ -36,32 +36,40 @@ class Target(db.Model):
         return False
 
     def kafka_config(self):
+        if self.enable_kafka:
+            return {
+                "kafkaEnable": "true",
+                "target": self.target,
+                "brokers": self.brokers,
+                "topic": self.topic
+            }
         return {
-            "kafkaEnable": "true",
-            "target": self.target,
-            "brokers": self.brokers,
-            "topic": self.topic
+            "kafkaEnable": "false"
         }
 
     def sls_config(self):
-        config = {
-            "slsEnalbe": "true",
-            "target": self.target,
-            "sls_access_key_id": self.sls_access_key_id,
-            "sls_access_key_secret": self.sls_access_key_secret,
-            "sls_project": self.sls_project,
-            "sls_region_endpoint": self.sls_region_endpoint,
-            "sls_logstore": self.sls_logstore,
+        if self.enable_sls:
+            config = {
+                "slsEnalbe": "true",
+                "target": self.target,
+                "sls_access_key_id": self.sls_access_key_id,
+                "sls_access_key_secret": self.sls_access_key_secret,
+                "sls_project": self.sls_project,
+                "sls_region_endpoint": self.sls_region_endpoint,
+                "sls_logstore": self.sls_logstore,
+            }
+            if self.sls_need_create_logstore is False:
+                config.update({
+                    "sls_need_create_logstore": "false"
+                })
+            else:
+                config.update({
+                    "sls_need_create_logstore": "true"
+                })
+            return config
+        return {
+            "slsEnalbe": "false"
         }
-        if self.sls_need_create_logstore is False:
-            config.update({
-                "sls_need_create_logstore": "false"
-            })
-        else:
-            config.update({
-                "sls_need_create_logstore": "true"
-            })
-        return config
 
     def buffer_config(self):
         if self.interval is None:

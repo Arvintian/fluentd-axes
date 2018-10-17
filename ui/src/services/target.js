@@ -7,7 +7,7 @@ export async function fetchTargets() {
 export async function addTarget(target) {
     let data = {}
     for (let k in target) {
-        if (target[k]) {
+        if (target[k] || target[k] == "") {
             data[k] = target[k]
         }
     }
@@ -20,7 +20,7 @@ export async function addTarget(target) {
 export async function updateTarget(target) {
     let data = {}
     for (let k in target) {
-        if (target[k]) {
+        if (target[k] || target[k] == "") {
             data[k] = target[k]
         }
     }

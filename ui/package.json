@@ -1,7 +1,7 @@
 {
-  "name": "dashboard-ui-demo",
+  "name": "fluentd-axes-ui",
   "version": "0.1.0",
-  "description": "dashboard前端模板",
+  "description": "fluentd axes ui",
   "private": true,
   "scripts": {
     "start": "currVersion=dev PORT=8080 umi dev",
