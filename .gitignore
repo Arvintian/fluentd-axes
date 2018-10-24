@@ -3,4 +3,5 @@ run.conf
 vendor/
 *.pyc
 dist/
+static/
 fluentd-axes

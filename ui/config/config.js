@@ -16,7 +16,7 @@ export default {
     theme: {
         'card-actions-background': '#f5f8fa',
     },
-    outputPath: './dist',
+    outputPath: '../static',
     plugins: [[
         'umi-plugin-react',
         {

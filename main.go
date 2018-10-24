@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/Arvintian/fluentd-axes/axes"
+	"github.com/Arvintian/fluentd-axes/ui"
 	"log"
 	"os"
 	"os/signal"
@@ -9,6 +10,7 @@ import (
 )
 
 func main() {
+	ui.StartUIServer()
 	err := axes.StartAPIServer()
 	if err != nil {
 		log.Fatalf("start apiserver error %v", err)
@@ -40,6 +42,7 @@ func main() {
 		case <-signalCh:
 			axes.KillFluentd()
 			axes.KillAPIServer()
+			ui.KillUIServer()
 			log.Printf("Interrupt signal exit.")
 		}
 	}
