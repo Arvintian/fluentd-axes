@@ -68,9 +68,16 @@ RUN apk add ca-certificates wget curl openssl lsof
 COPY dist/apiserver-1.0.0.tar.gz /tmp/
 RUN pip3 install /tmp/apiserver-1.0.0.tar.gz
 
+#ui
+ADD static /fluentd/static
+
 # bin
 ADD template.conf /fluentd/etc/
 ENV FILEPATH /fluentd/etc
 ADD fluentd-axes /bin/
+
+EXPOSE 8000
+EXPOSE 5000
+EXPOSE 24224
 
 CMD ["/bin/fluentd-axes"]
